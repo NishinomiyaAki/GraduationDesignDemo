@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="Source\Editor\Individual\DisplayPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="EditWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Console\LogItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Control.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Docking\DockingBlock.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Docking\DockingCard.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Edit.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\FileBrowser\FileIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\FileBrowser\FileItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Menu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\MenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Source\Editor\Individual\Panel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

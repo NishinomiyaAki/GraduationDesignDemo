@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BehaviorTreeEditorPrototype": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
