@@ -1,45 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+
 //using System.Threading;
 //using System.Windows.Forms;
 using System.Timers;
 
 namespace CrossEditor
 {
-    struct ExecuteInfo
+    internal struct ExecuteInfo
     {
         public int ExecuteIndex;
         public List<ResultType> ChildResults;
         public List<ResultType> MainChildResults;
     }
 
-    enum ExecuteMode
+    internal enum ExecuteMode
     {
         Single,
         Looped
     }
 
-    class BehaviorTreeComponent
+    internal class BehaviorTreeComponent
     {
-        BehaviorTree _BehaviorTree;
-        BlackboardComponent _BlackboardComponent;
+        private BehaviorTree _BehaviorTree;
+        private BlackboardComponent _BlackboardComponent;
 
-        BTNode _RootNode;
-        BTNode _ExecuteNode;
-        
-        List<BTNode> _ParallelNodes;
-        List<BTNode> _ActiveNodes;
-        List<BTTaskNode> _ParallelTaskNodes;
-        List<BTServiceNode> _ServiceNodes;
-        List<BTServiceNode> _ExecuteServiceNodes;
-        List<BTDecoratorNode> _ExecuteDecoratorNodes;
+        private BTNode _RootNode;
+        private BTNode _ExecuteNode;
+
+        private List<BTNode> _ParallelNodes;
+        private List<BTNode> _ActiveNodes;
+        private List<BTTaskNode> _ParallelTaskNodes;
+        private List<BTServiceNode> _ServiceNodes;
+        private List<BTServiceNode> _ExecuteServiceNodes;
+        private List<BTDecoratorNode> _ExecuteDecoratorNodes;
+
         // Memory
-        Dictionary<BTCompositeNode, ExecuteInfo> _ExecuteInfos;
-        Dictionary<BTTaskNode, object> _TaskMemory;
-        Dictionary<BTServiceNode, object> _ServiceMemory;
+        private Dictionary<BTCompositeNode, ExecuteInfo> _ExecuteInfos;
 
-        Timer _Timer;
-        ExecuteMode _ExecuteMode;
+        private Dictionary<BTTaskNode, object> _TaskMemory;
+        private Dictionary<BTServiceNode, object> _ServiceMemory;
+
+        private Timer _Timer;
+        private ExecuteMode _ExecuteMode;
 
         public BehaviorTreeComponent(BehaviorTree BehaviorTree)
         {
@@ -50,7 +53,7 @@ namespace CrossEditor
             _Timer.Elapsed += Tick;
             _Timer.AutoReset = true;
             // synchronize with edit window
-            _Timer.SynchronizingObject = MainUI.GetInstance().EditWindow;
+            _Timer.SynchronizingObject = MainUI.GetInstance().MainWindow;
         }
 
         public void SetExecuteMode(ExecuteMode Mode)

@@ -25,7 +25,7 @@
             Timer = new System.Timers.Timer(1000 / 60);
             Timer.Elapsed += Tick;
             Timer.AutoReset = true;
-            Timer.SynchronizingObject = MainUI.GetInstance().EditWindow;
+            Timer.SynchronizingObject = MainUI.GetInstance().MainWindow;
         }
 
         private void Tick(object sender, System.Timers.ElapsedEventArgs e)

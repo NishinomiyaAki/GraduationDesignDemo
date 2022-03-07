@@ -736,7 +736,7 @@ namespace CrossEditor
             MenuContextMenu.AddMenuItem(MenuItem_Node_Convert);
             MenuContextMenu.AddMenuItem(MenuItem_Node_Function);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 

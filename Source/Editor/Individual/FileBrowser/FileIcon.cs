@@ -190,11 +190,11 @@ namespace CrossEditor
                             Controls.Add(_Edit);
                             FileManager.GetInstance().RefreshCurrentDirectory();
 
-                            if(string.Compare(_FileInfo.Extension, ".BB", StringComparison.OrdinalIgnoreCase) == 0)
+                            if (string.Compare(_FileInfo.Extension, ".BB", StringComparison.OrdinalIgnoreCase) == 0)
                             {
                                 BlackboardManager.GetInstance().RegisterBlackboard(_FileInfo);
                             }
-                            else if(string.Compare(_FileInfo.Extension, ".BT", StringComparison.OrdinalIgnoreCase) == 0)
+                            else if (string.Compare(_FileInfo.Extension, ".BT", StringComparison.OrdinalIgnoreCase) == 0)
                             {
                                 BehaviorTreeManager.GetInstance().RegisterBehaviorTree(_FileInfo);
                             }

@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace BehaviorTreeEditorPrototype
+namespace GraduationDesignDemo
 {
     internal static class Program
     {

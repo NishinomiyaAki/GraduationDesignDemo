@@ -4,22 +4,13 @@
     {
         private static MainUI _Instance = new MainUI();
 
-        private BehaviorTreeEditorPrototype.MainWindow _MainWindow;
-        private BehaviorTreeEditorPrototype.EditWindow _EditWindow;
+        private GraduationDesignDemo.MainWindow _MainWindow;
 
-        public BehaviorTreeEditorPrototype.MainWindow MainWindow
+        public GraduationDesignDemo.MainWindow MainWindow
         {
             get
             {
                 return _MainWindow;
-            }
-        }
-
-        public BehaviorTreeEditorPrototype.EditWindow EditWindow
-        {
-            get
-            {
-                return _EditWindow;
             }
         }
 
@@ -28,10 +19,9 @@
             return _Instance;
         }
 
-        public void Initialize(BehaviorTreeEditorPrototype.MainWindow MainWindow, BehaviorTreeEditorPrototype.EditWindow EditWindow)
+        public void Initialize(GraduationDesignDemo.MainWindow MainWindow)
         {
             _MainWindow = MainWindow;
-            _EditWindow = EditWindow;
         }
 
         public void ActivateDockingCard_Console()

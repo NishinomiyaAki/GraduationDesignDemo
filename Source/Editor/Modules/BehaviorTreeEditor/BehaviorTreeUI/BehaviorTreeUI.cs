@@ -178,7 +178,6 @@ namespace CrossEditor
                 }
                 else if (_SelectedObject is BTAuxiliaryNode)
                 {
-
                     InspectorUI.SetObjectInspected(_SelectedObject);
                 }
                 else if (_SelectedObject is Slot)
@@ -260,7 +259,7 @@ namespace CrossEditor
                             }
 
                             // the main out slot of parallel node can only connect with task node
-                            if(!((OutSlot.Node as BTNode)._MainOutSlot == OutSlot && !(InSlot.Node is BTTaskNode)))
+                            if (!((OutSlot.Node as BTNode)._MainOutSlot == OutSlot && !(InSlot.Node is BTTaskNode)))
                             {
                                 _BehaviorTree.ClearConnectionsOfSlot(InSlot);
                                 _CurrentConnection.SetOutSlot(OutSlot);
@@ -292,7 +291,7 @@ namespace CrossEditor
             Stack<Node> Stack = new Stack<Node>();
             Node CurrentNode = InSlot.Node;
             Stack.Push(CurrentNode);
-            while(Stack.Count != 0)
+            while (Stack.Count != 0)
             {
                 CurrentNode = Stack.Pop() as BTNode;
                 if (Nodes.Contains(CurrentNode))
@@ -310,8 +309,6 @@ namespace CrossEditor
             }
             return true;
         }
-
-
 
         private void OnPanelRightMouseDown(Control Sender, int MouseX, int MouseY, ref bool bContinue)
         {
@@ -335,7 +332,7 @@ namespace CrossEditor
                     int BaseX = GetBaseX();
                     int BaseY = GetBaseY();
                     object HitObject = _BehaviorTree.HitTest(MouseX - BaseX, MouseY - BaseY);
-                    if(HitObject != null && HitObject is BTNode)
+                    if (HitObject != null && HitObject is BTNode)
                     {
                         SelectObject(HitObject);
                         _BehaviorTree.MoveToTop(HitObject as BTNode);
@@ -344,7 +341,7 @@ namespace CrossEditor
                             ShowBTNodeMenu(MouseX, MouseY);
                         }
                     }
-                    else if(HitObject != null && HitObject is BTAuxiliaryNode)
+                    else if (HitObject != null && HitObject is BTAuxiliaryNode)
                     {
                         SelectObject(HitObject);
                         _BehaviorTree.MoveToTop((HitObject as BTAuxiliaryNode)._ParentNode);
@@ -405,7 +402,7 @@ namespace CrossEditor
             };
             Menu_Node_Composite.AddMenuItem(MenuItem_Node_Composite_Parallel);
 
-            #endregion
+            #endregion Composite
 
             MenuItem MenuItem_Node_Composite = new MenuItem();
             MenuItem_Node_Composite.SetText("Composites");
@@ -456,7 +453,7 @@ namespace CrossEditor
             };
             Menu_Node_Task.AddMenuItem(MenuItem_Node_Task_ChasePlayer);
 
-            #endregion
+            #endregion Task
 
             MenuItem MenuItem_Node_Task = new MenuItem();
             MenuItem_Node_Task.SetText("Tasks");
@@ -466,7 +463,7 @@ namespace CrossEditor
             MenuContextMenu.AddMenuItem(MenuItem_Node_Composite);
             MenuContextMenu.AddMenuItem(MenuItem_Node_Task);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 
@@ -501,7 +498,7 @@ namespace CrossEditor
             };
             Menu_Node_Decorator.AddMenuItem(Decorator_BlackboardBasedCondition);
 
-            #endregion
+            #endregion Decorator
 
             MenuItem MenuItem_Node_Decorator = new MenuItem();
             MenuItem_Node_Decorator.SetText("Decorators");
@@ -528,7 +525,7 @@ namespace CrossEditor
             };
             Menu_Node_Service.AddMenuItem(MenuItem_Node_Service_FindPlayer);
 
-            #endregion
+            #endregion Service
 
             MenuItem MenuItem_Node_Service = new MenuItem();
             MenuItem_Node_Service.SetText("Services");
@@ -540,7 +537,7 @@ namespace CrossEditor
             MenuContextMenu.AddMenuItem(MenuItem_Node_Decorator);
             MenuContextMenu.AddMenuItem(MenuItem_Node_Service);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 
@@ -558,7 +555,7 @@ namespace CrossEditor
 
             MenuContextMenu.AddMenuItem(MenuItem_Delete);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 
@@ -576,7 +573,7 @@ namespace CrossEditor
 
             MenuContextMenu.AddMenuItem(MenuItem_Delete);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 

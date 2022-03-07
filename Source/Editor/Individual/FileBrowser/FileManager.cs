@@ -166,11 +166,11 @@ namespace CrossEditor
                 else
                 {
                     FileInfo SelectedInfo = _IconSelected.Info as FileInfo;
-                    if(string.Compare(SelectedInfo.Extension, ".BB", StringComparison.OrdinalIgnoreCase) == 0)
+                    if (string.Compare(SelectedInfo.Extension, ".BB", StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         BlackboardManager.GetInstance().UnregisterBlackboard(SelectedInfo);
                     }
-                    else if(string.Compare(SelectedInfo.Extension, ".BT", StringComparison.OrdinalIgnoreCase) == 0)
+                    else if (string.Compare(SelectedInfo.Extension, ".BT", StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         BehaviorTreeManager.GetInstance().UnregisterBehaviorTree(SelectedInfo);
                     }
@@ -178,7 +178,6 @@ namespace CrossEditor
                     _IconSelected.Dispose();
                     SelectedInfo.Delete();
                     RefreshCurrentDirectory();
-
                 }
             };
 
@@ -313,7 +312,7 @@ namespace CrossEditor
                     Y += SubControl.Height;
                 }
             }
-            if(Panel != _DetailPanel)
+            if (Panel != _DetailPanel)
             {
                 Panel.Height = Y;
             }
@@ -321,7 +320,6 @@ namespace CrossEditor
             {
                 Panel.Height = Math.Max(_DetailPanel.Parent.Height, Y);
             }
-            
         }
 
         public void DoIconLayout()
@@ -475,15 +473,15 @@ namespace CrossEditor
                 FileInfo Info = (Self.Info as FileInfo);
                 if (Info != null && string.Compare(Info.Extension, ".VS", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    MainUI.GetInstance().EditWindow.OpenNodeGraph(Info.FullName);
+                    MainUI.GetInstance().MainWindow.OpenNodeGraph(Info.FullName);
                 }
                 else if (Info != null && string.Compare(Info.Extension, ".BT", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    MainUI.GetInstance().EditWindow.OpenBehaviorTree(Info.FullName);
+                    MainUI.GetInstance().MainWindow.OpenBehaviorTree(Info.FullName);
                 }
                 else if (Info != null && string.Compare(Info.Extension, ".BB", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    MainUI.GetInstance().EditWindow.OpenBlackboard(Info.FullName);
+                    MainUI.GetInstance().MainWindow.OpenBlackboard(Info.FullName);
                 }
             }
         }

@@ -5,7 +5,7 @@ using EditorUI;
 
 namespace CrossEditor
 {
-    class BlackboardUI : DockingUI
+    internal class BlackboardUI : DockingUI
     {
         private static BlackboardUI _Instance = new BlackboardUI();
 
@@ -73,7 +73,6 @@ namespace CrossEditor
             return true;
         }
 
-
         private void OnEditMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Edit Self = sender as Edit;
@@ -91,7 +90,7 @@ namespace CrossEditor
         private void OnEditMouseLeave(object sender, EventArgs e)
         {
             Edit Self = sender as Edit;
-            if(Self == _SelectedObject)
+            if (Self == _SelectedObject)
             {
                 Self.BackColor = Graphics2D.GetInstance().ConvertColorToDrawingColor(Color.EDITOR_UI_ACTIVE_TOOL_OR_MENU);
             }
@@ -105,7 +104,7 @@ namespace CrossEditor
         {
             Edit Self = sender as Edit;
 
-            if(e.Button == System.Windows.Forms.MouseButtons.Right &&
+            if (e.Button == System.Windows.Forms.MouseButtons.Right &&
                 e.X == _SavedMouseX && e.Y == _SavedMouseY)
             {
                 showEditMenu(Self.GetScreenX() + e.X, Self.GetScreenY() + e.Y);
@@ -126,13 +125,13 @@ namespace CrossEditor
 
             MenuContextMenu.AddMenuItem(MenuItem_Delete);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 
         private void ChangeSelectedObject(object Object)
         {
-            if(_SelectedObject != null)
+            if (_SelectedObject != null)
             {
                 (_SelectedObject as Edit).BackColor = Graphics2D.GetInstance().ConvertColorToDrawingColor(Color.EDITOR_UI_GRAY_DRAW_COLOR);
             }
@@ -146,7 +145,7 @@ namespace CrossEditor
         private void OnPanelMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Panel Self = sender as Panel;
-            if(e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 ShowPanelMenu(Self.GetScreenX() + e.X, Self.GetScreenY() + e.Y);
             }
@@ -166,20 +165,20 @@ namespace CrossEditor
 
             MenuContextMenu.AddMenuItem(MenuItem_Save);
 
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 
         private void OnMouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Edit Self = sender as Edit;
-            if(e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                if(Self == _Current)
+                if (Self == _Current)
                 {
                     _CurrentEntriesPanel.Visible = !_CurrentEntriesPanel.Visible;
                 }
-                else if(Self == _Parent)
+                else if (Self == _Parent)
                 {
                     _ParentEntriesPanel.Visible = !_ParentEntriesPanel.Visible;
                 }
@@ -189,7 +188,7 @@ namespace CrossEditor
         private void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Edit Self = sender as Edit;
-            if(e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 ShowContextMenu(Self.GetScreenX() + e.X, Self.GetScreenY() + e.Y);
             }
@@ -237,14 +236,14 @@ namespace CrossEditor
             };
             Menu_New.AddMenuItem(MenuItem_New_Vector);
 
-            #endregion
+            #endregion New
 
             MenuItem Menuitem_New = new MenuItem();
             Menuitem_New.SetText("New");
             Menuitem_New.SetMenu(Menu_New);
 
             MenuContextMenu.AddMenuItem(Menuitem_New);
-            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().EditWindow);
+            ContextMenu.GetInstance().SetForm(MainUI.GetInstance().MainWindow);
             ContextMenu.GetInstance().ShowMenu(MenuContextMenu, MouseX, MouseY);
         }
 
@@ -261,7 +260,7 @@ namespace CrossEditor
         private void OnPanelVisibleChanged(object Sender, EventArgs e)
         {
             Panel Self = Sender as Panel;
-            if(Self.Visible)
+            if (Self.Visible)
             {
                 DoLayout();
             }
@@ -293,7 +292,7 @@ namespace CrossEditor
 
         public override void DoSave()
         {
-            if(_FileName != "")
+            if (_FileName != "")
             {
                 _Blackboard.SaveToXml(_FileName);
             }
