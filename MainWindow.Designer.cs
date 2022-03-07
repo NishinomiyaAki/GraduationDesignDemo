@@ -38,9 +38,6 @@ namespace BehaviorTreeEditorPrototype
             this.BottomPanel.Location = new System.Drawing.Point(0, ClientSize.Height * 3 / 4);
             this.BottomPanel.Size = new System.Drawing.Size(ClientSize.Width, ClientSize.Height / 4);
 
-            this.DisplayPanel.Location = new System.Drawing.Point(0, 0);
-            this.DisplayPanel.Size = TopPanel.Size;
-
             this.FileManager?.DoLayout();
 
             base.OnSizeChanged(e);
@@ -52,7 +49,6 @@ namespace BehaviorTreeEditorPrototype
         private EditWindow EditWindow;
         private System.Windows.Forms.Panel TopPanel;
         private System.Windows.Forms.Panel BottomPanel;
-        private DisplayPanel DisplayPanel;
         private FileManager FileManager;
 
         /// <summary>
@@ -61,8 +57,6 @@ namespace BehaviorTreeEditorPrototype
         /// </summary>
         private void InitializeComponent()
         {
-            this.DisplayPanel = new DisplayPanel();
-
             this.TopPanel = new System.Windows.Forms.Panel();
             this.BottomPanel = new System.Windows.Forms.Panel();
 
@@ -79,8 +73,6 @@ namespace BehaviorTreeEditorPrototype
 
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.BottomPanel);
-
-            this.TopPanel.Controls.Add(DisplayPanel);
 
             CreateFolder("TestFolder");
 
