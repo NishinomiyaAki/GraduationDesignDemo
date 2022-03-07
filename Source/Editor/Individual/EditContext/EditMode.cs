@@ -1,4 +1,4 @@
-﻿namespace CrossEditor
+﻿namespace Editor
 {
     public enum EditMode
     {

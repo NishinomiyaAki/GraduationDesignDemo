@@ -1,7 +1,7 @@
 ﻿using EditorUI;
 using System.Collections.Generic;
 
-namespace CrossEditor
+namespace Editor
 {
     public class DockingBlock : Control
     {

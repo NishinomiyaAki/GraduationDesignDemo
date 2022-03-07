@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class EditOperation_Compound : EditOperation
     {

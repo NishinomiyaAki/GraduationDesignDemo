@@ -5,7 +5,7 @@ using System.Collections.Generic;
 //using System.Windows.Forms;
 using System.Timers;
 
-namespace CrossEditor
+namespace Editor
 {
     internal struct ExecuteInfo
     {

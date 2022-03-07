@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     class LogItem : Edit
     {

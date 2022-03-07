@@ -1,6 +1,6 @@
 ﻿using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class Graphics2D
     {

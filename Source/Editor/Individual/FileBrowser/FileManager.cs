@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class FileManager
     {

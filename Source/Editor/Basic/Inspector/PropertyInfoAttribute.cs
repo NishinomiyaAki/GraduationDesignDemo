@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace CrossEditor
+namespace Editor
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class PropertyInfoAttribute : System.Attribute

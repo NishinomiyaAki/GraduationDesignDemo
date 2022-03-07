@@ -1,6 +1,6 @@
 ﻿using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     public class FlowNode_Event : FlowNode_StringContent
     {

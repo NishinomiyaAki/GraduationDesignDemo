@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class BlackboardUI : DockingUI
     {

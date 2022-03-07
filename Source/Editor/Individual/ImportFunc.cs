@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CrossEditor
+namespace Editor
 {
     class ImportFunc
     {

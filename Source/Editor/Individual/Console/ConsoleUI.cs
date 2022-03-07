@@ -1,7 +1,7 @@
 ﻿using System;
 using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class ConsoleUI
     {

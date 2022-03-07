@@ -1,4 +1,4 @@
-﻿namespace CrossEditor
+﻿namespace Editor
 {
     public class Panel : Control
     {

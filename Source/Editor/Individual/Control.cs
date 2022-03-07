@@ -1,4 +1,4 @@
-﻿namespace CrossEditor
+﻿namespace Editor
 {
     public class Control : System.Windows.Forms.ScrollableControl
     {

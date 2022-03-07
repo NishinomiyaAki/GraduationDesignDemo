@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class FileItem : Edit
     {

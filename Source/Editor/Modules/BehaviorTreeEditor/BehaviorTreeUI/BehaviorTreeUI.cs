@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class BehaviorTreeUI : DockingUI
     {

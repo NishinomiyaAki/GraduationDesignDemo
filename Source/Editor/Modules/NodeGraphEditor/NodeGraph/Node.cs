@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CrossEditor
+namespace Editor
 {
     public class Node
     {

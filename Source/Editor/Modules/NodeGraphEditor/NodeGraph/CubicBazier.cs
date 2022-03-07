@@ -1,7 +1,7 @@
 ﻿using EditorUI;
 using System;
 
-namespace CrossEditor
+namespace Editor
 {
     public class CubicBazier
     {

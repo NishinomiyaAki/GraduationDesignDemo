@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace CrossEditor
+namespace Editor
 {
     internal class Inspector_Property : Inspector
     {

@@ -4,7 +4,7 @@ using System.Text;
 using System.Reflection;
 using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     enum InspectType
     {

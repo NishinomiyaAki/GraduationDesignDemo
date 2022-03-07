@@ -5,7 +5,7 @@ using System.Collections;
 using System.IO;
 using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     class BehaviorTreeManager
     {

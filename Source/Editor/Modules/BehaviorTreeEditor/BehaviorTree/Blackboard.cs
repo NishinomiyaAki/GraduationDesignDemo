@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
     class Blackboard
     { 

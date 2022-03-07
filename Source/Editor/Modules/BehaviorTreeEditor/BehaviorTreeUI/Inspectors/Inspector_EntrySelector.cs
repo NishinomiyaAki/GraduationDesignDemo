@@ -4,7 +4,7 @@ using System.Text;
 using EditorUI;
 using System.Reflection;
 
-namespace CrossEditor
+namespace Editor
 {
     class Inspector_EntrySelector : Inspector
     {
