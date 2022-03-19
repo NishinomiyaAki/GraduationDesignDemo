@@ -1,8 +1,8 @@
 ﻿using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
-    class FlowNode_ToInt : FlowNode
+    internal class FlowNode_ToInt : FlowNode
     {
         public FlowNode_ToInt()
         {

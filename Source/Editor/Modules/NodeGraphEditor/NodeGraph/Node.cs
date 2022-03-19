@@ -1,70 +1,46 @@
 ﻿using EditorUI;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
-namespace CrossEditor
+namespace Editor
 {
-
     public class Node
     {
-        const int SpanX = 5;
-        const int SpanY = 5;
-
-        public const int SlotStartY = 20;
-        public const int SlotWidth = 14;
-        public const int SlotHeight = 12;
-        public const int SpanX1 = 2;
+        private const int SpanX = 10;
+        private const int SpanY = 10;
+        private const int SlotStartY = 30;
+        private const int SlotWidth = 14;
+        private const int SlotHeight = 14;
+        private const int SpanX1 = 2;
 
         public int ID;
 
-        protected NodeGraphModel Owner;
-
-        public bool bHasSubGraph;
-        public NodeGraphModel SubGraph;
-
         public NodeType NodeType;
         public string Name;
-
-        protected List<Slot> InSlots;
-        protected List<Slot> OutSlots;
-
+        private List<Slot> InSlots;
+        private List<Slot> OutSlots;
         public bool bSelected;
-        public bool bDebugged;
-        public bool bOperable;
-        public bool bEditable;
 
         public int X;
         public int Y;
         public int Width;
         public int Height;
 
-        public int ContentX;
-        public int ContentY;
-        public int ContentWidth;
-        public int ContentHeight;
+        private int ContentX;
+        private int ContentY;
+        private int ContentWidth;
+        private int ContentHeight;
 
         public bool bError;
-
-        public Action RenameEvent;
 
         public Node()
         {
             ID = 0;
-
-            bHasSubGraph = false;
-
             NodeType = NodeType.Unknown;
             Name = "";
-
             InSlots = new List<Slot>();
             OutSlots = new List<Slot>();
-
             bSelected = false;
-            bDebugged = false;
-            bOperable = true;
-            bEditable = true;
 
             ContentX = 0;
             ContentY = 0;
@@ -72,51 +48,14 @@ namespace CrossEditor
             ContentHeight = 0;
 
             bError = false;
-
-            RenameEvent = () =>
-            {
-                if (bHasSubGraph)
-                {
-                    SubGraph.Name = Name;
-                }
-            };
         }
 
-        [PropertyInfo(PropertyType = "Auto", ToolTips = "Node Name")]
-        public string NodeName
-        {
-            get
-            {
-                return Name;
-            }
-            set
-            {
-                Name = value;
-                RenameEvent?.Invoke();
-            }
-        }
-
-        public NodeGraphModel GetOwner() => Owner;
-
-        public void SetOwner(NodeGraphModel Model)
-        {
-            Owner = Model;
-        }
-
-        public void SetSubGraph(NodeGraphModel SubGraph)
-        {
-            bHasSubGraph = true;
-            this.SubGraph = SubGraph;
-            this.SubGraph.Name = Name;
-            this.SubGraph.Owner = this;
-        }
-
-        public void SetError()
+        public virtual void SetError()
         {
             bError = true;
         }
 
-        public void ClearError()
+        public virtual void ClearError()
         {
             bError = false;
             foreach (Slot InSlot in InSlots)
@@ -129,25 +68,6 @@ namespace CrossEditor
             }
         }
 
-        public virtual void CommitError(string ErrorInformation)
-        {
-            SetError();
-            string ErrorMessage = string.Format("Error: Graph Node {0}({1}): {2}", Name, ID, ErrorInformation);
-            ConsoleUI.GetInstance().AddLogItem(LogMessageType.Error, ErrorMessage);
-            MainUI.GetInstance().ActivateDockingCard_Console();
-        }
-
-        public void SetDebugStatus()
-        {
-            bDebugged = true;
-        }
-        public void ResetDebugStatus()
-        {
-            bDebugged = false;
-        }
-
-        #region In Slot
-
         public void AddInSlot(Slot InSlot)
         {
             InSlot.bOutput = false;
@@ -156,27 +76,12 @@ namespace CrossEditor
             InSlots.Add(InSlot);
         }
 
-        public void AddInSlot(string Name, SlotType SlotType, SlotSubType SlotSubType = SlotSubType.Default)
+        public void AddInSlot(string Name, SlotType SlotType)
         {
             Slot InSlot = new Slot();
             InSlot.Name = Name;
             InSlot.SlotType = SlotType;
-            InSlot.SlotSubType = SlotSubType;
             AddInSlot(InSlot);
-        }
-
-        public void RemoveInSlot(int Index)
-        {
-            if (Index < 0 || Index > InSlots.Count - 1)
-                return;
-
-            InSlots.RemoveAt(Index);
-            RefreshSlotsIndex(InSlots);
-        }
-
-        public void RemoveLastInSlot()
-        {
-            RemoveInSlot(InSlots.Count - 1);
         }
 
         public Slot GetInSlot(int Index)
@@ -201,19 +106,6 @@ namespace CrossEditor
             return null;
         }
 
-        #endregion
-
-        // Insert and RemoveAt Operation may cause Slot.Index false, need refresh.
-        protected void RefreshSlotsIndex(List<Slot> Slots)
-        {
-            for(int Index = 0; Index < Slots.Count; ++Index)
-            {
-                Slots[Index].Index = Index;
-            }
-        }
-
-        #region Out Slot
-
         public void AddOutSlot(Slot OutSlot)
         {
             OutSlot.bOutput = true;
@@ -222,27 +114,12 @@ namespace CrossEditor
             OutSlots.Add(OutSlot);
         }
 
-        public void AddOutSlot(string Name, SlotType SlotType, SlotSubType SlotSubType = SlotSubType.Default)
+        public void AddOutSlot(string Name, SlotType SlotType)
         {
             Slot OutSlot = new Slot();
             OutSlot.Name = Name;
             OutSlot.SlotType = SlotType;
-            OutSlot.SlotSubType = SlotSubType;
             AddOutSlot(OutSlot);
-        }
-
-        public void RemoveOutSlot(int Index)
-        {
-            if (Index < 0 || Index > OutSlots.Count - 1)
-                return;
-
-            OutSlots.RemoveAt(Index);
-            RefreshSlotsIndex(OutSlots);
-        }
-
-        public void RemoveLastOutSlot()
-        {
-            RemoveOutSlot(OutSlots.Count - 1);
         }
 
         public Slot GetOutSlot(int Index)
@@ -267,7 +144,39 @@ namespace CrossEditor
             return null;
         }
 
-        #endregion
+        public Node GetInputNode(int InSlotIndex, out int OutSlotIndex)
+        {
+            Slot Slot = GetInSlot(InSlotIndex);
+            List<Connection> Connections = Slot.GetConnections();
+            int ConnectionCount = Connections.Count;
+            if (ConnectionCount >= 1)
+            {
+                if (ConnectionCount > 1)
+                {
+                    DebugHelper.Assert(false);
+                }
+                Connection Connection = Connections[0];
+                OutSlotIndex = Connection.OutSlot.Index;
+                return Connection.OutSlot.Node;
+            }
+            else
+            {
+                OutSlotIndex = -1;
+                return null;
+            }
+        }
+
+        public List<Node> GetOutputNodes(int OutSlotIndex)
+        {
+            Slot Slot = GetOutSlot(OutSlotIndex);
+            List<Connection> Connections = Slot.GetConnections();
+            List<Node> Nodes = new List<Node>();
+            foreach (Connection Connection in Connections)
+            {
+                Nodes.Add(Connection.InSlot.Node);
+            }
+            return Nodes;
+        }
 
         public virtual void GetContentSize(ref int ContentWidth, ref int ContentHeight)
         {
@@ -300,12 +209,6 @@ namespace CrossEditor
             }
             ContentX = SpanX + MaxInSlotWidth + SpanX;
             Width = ContentX + ContentWidth + SpanX + MaxOutSlotWidth + SpanX;
-
-            string ShownString = Name;
-            int NameWidthSpan = SpanX * 2;
-            int NameWidth = GraphicsHelper.GetInstance().DefaultFont.MeasureString_Fast(ShownString) + NameWidthSpan;
-            Width = Width > NameWidth ? Width : NameWidth;
-
             int Y1 = SlotStartY + SpanY;
             foreach (Slot InSlot in InSlots)
             {
@@ -350,31 +253,45 @@ namespace CrossEditor
             Color Color1 = Color.FromRGBA(0, 0, 0, 160);
             GraphicsHelper.FillRectangle(Color1, X, Y, Width, Height);
 
-            Color Color2 = NodeColor.GetColor(NodeType);
-            GraphicsHelper.FillRectangle(Color2, X, Y, Width, SlotStartY);
-
-            Color ColorRect;
-            if (bSelected && bError)
+            Color Color2 = Color.FromRGB(0, 0, 0);
+            if (NodeType == NodeType.Expression)
             {
-                ColorRect = Color.FromRGB(255, 102, 0);
+                Color2 = Color.FromRGB(96, 132, 91);
             }
-            else if (bSelected)
+            else if (NodeType == NodeType.Statement)
             {
-                ColorRect = Color.FromRGB(255, 204, 0);
+                Color2 = Color.FromRGB(69, 110, 137);
             }
-            else if (bDebugged)
+            else if (NodeType == NodeType.ControlFlow)
             {
-                ColorRect = Color.EDITOR_UI_COLOR_WHITE;
+                Color2 = Color.FromRGB(180, 105, 20);
             }
-            else if (bError)
+            else if (NodeType == NodeType.Event)
             {
-                ColorRect = Color.FromRGB(255, 0, 0);
+                Color2 = Color.FromRGB(142, 20, 19);
             }
             else
             {
-                ColorRect = Color.FromRGB(0, 0, 0);
+                DebugHelper.Assert(false);
             }
-            GraphicsHelper.DrawRectangle(ColorRect, X, Y, Width, Height);
+            GraphicsHelper.FillRectangle(Color2, X, Y, Width, SlotStartY);
+
+            if (bSelected && bError)
+            {
+                GraphicsHelper.DrawRectangle(Color.FromRGB(255, 102, 0), X, Y, Width, Height);
+            }
+            else if (bSelected)
+            {
+                GraphicsHelper.DrawRectangle(Color.FromRGB(255, 204, 0), X, Y, Width, Height);
+            }
+            else if (bError)
+            {
+                GraphicsHelper.DrawRectangle(Color.FromRGB(255, 0, 0), X, Y, Width, Height);
+            }
+            else
+            {
+                GraphicsHelper.DrawRectangle(Color.FromRGB(0, 0, 0), X, Y, Width, Height);
+            }
 
             Color Color3 = Color.FromRGB(255, 255, 255);
             int Height1 = SlotStartY;
@@ -394,26 +311,28 @@ namespace CrossEditor
             DrawContent(X + ContentX, Y + ContentY, ContentWidth, ContentHeight);
         }
 
-        public virtual object HitTest(int WorldX, int WorldY)
+        public virtual object HitTest(int MouseX, int MouseY)
         {
-            if (UIManager.PointInRect(WorldX, WorldY, X, Y, Width, Height))
+            if (UIManager.PointInRect(MouseX, MouseY, X, Y, Width, Height))
             {
                 int Count = InSlots.Count;
                 for (int i = Count - 1; i >= 0; i--)
                 {
                     Slot InSlot = InSlots[i];
-                    if (InSlot.HitTest(WorldX, WorldY))
+                    object HitObject = InSlot.HitTest(MouseX, MouseY);
+                    if (HitObject != null)
                     {
-                        return InSlot;
+                        return HitObject;
                     }
                 }
                 Count = OutSlots.Count;
                 for (int i = Count - 1; i >= 0; i--)
                 {
                     Slot OutSlot = OutSlots[i];
-                    if (OutSlot.HitTest(WorldX, WorldY))
+                    object HitObject = OutSlot.HitTest(MouseX, MouseY);
+                    if (HitObject != null)
                     {
-                        return OutSlot;
+                        return HitObject;
                     }
                 }
                 return this;
@@ -421,36 +340,38 @@ namespace CrossEditor
             return null;
         }
 
-        public virtual bool RectInRect(int X, int Y, int Width, int Height)
+        public virtual void SaveToXml(Record RecordNode)
         {
-            return UIManager.RectInRect(X, Y, Width, Height, this.X, this.Y, this.Width, this.Height);
+            Type Type = this.GetType();
+            RecordNode.SetTypeString(Type.Name);
+            RecordNode.SetInt("ID", ID);
+            RecordNode.SetInt("X", X);
+            RecordNode.SetInt("Y", Y);
         }
 
-        public virtual void CloneTo(ref Node Target)
+        public virtual void LoadFromXml(Record RecordNode)
         {
-            Target.ID = ID;
+            ID = RecordNode.GetInt("ID");
+            X = RecordNode.GetInt("X");
+            Y = RecordNode.GetInt("Y");
+        }
 
-            Target.X = X;
-            Target.Y = Y;
-            Target.Width = Width;
-            Target.Height = Height;
+        public void CommitNodeError(string ErrorInformation)
+        {
+            SetError();
+            string ErrorMessage = string.Format("Error: Graph Node {0}({1}): {2}", Name, ID, ErrorInformation);
+            ConsoleUI.GetInstance().AddLogItem(LogMessageType.Error, ErrorMessage);
+            MainUI.GetInstance().ActivateDockingCard_Console();
+        }
 
-            if (bHasSubGraph)
-            {
-                NodeGraphModel CloneModel = Activator.CreateInstance(SubGraph.GetType()) as NodeGraphModel;
-                SubGraph.CloneTo(ref CloneModel);
-                Target.SetSubGraph(CloneModel);
-            }
-
-            Type Type = this.GetType();
-            PropertyInfo[] Properties = Type.GetProperties();
-            foreach (PropertyInfo Info in Properties)
-            {
-                if (PropertyInfoAttribute.GetPropertyInfoAttribute(Info).bHide == false)
-                {
-                    Info.SetValue(Target, Info.GetValue(this));
-                }
-            }
+        public void CommitInSlotError(int InSlotIndex, string ErrorInformation)
+        {
+            SetError();
+            Slot Slot = GetInSlot(InSlotIndex);
+            Slot.SetError();
+            string ErrorMessage = string.Format("Error: Graph Slot {0}({1})-{2}({3}): {4}", Name, ID, Slot.Name, InSlotIndex, ErrorInformation);
+            ConsoleUI.GetInstance().AddLogItem(LogMessageType.Error, ErrorMessage);
+            MainUI.GetInstance().ActivateDockingCard_Console();
         }
     }
 }

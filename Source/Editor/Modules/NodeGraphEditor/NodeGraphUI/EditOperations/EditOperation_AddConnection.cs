@@ -1,48 +1,38 @@
-﻿using EditorUI;
-using System;
-using System.Collections.Generic;
-
-namespace CrossEditor
+﻿namespace Editor
 {
-    class EditOperation_AddConnection : EditOperation
+    internal class EditOperation_AddConnection : EditOperation
     {
-        NodeGraphView _View;
-        List<Connection> _ConnectionsToRemove;
-        List<Connection> _ConnectionsToAdd;
+        private ConnectionItemList _ConnectionItemList_RemoveOldConnections;
+        private ConnectionItemList _ConnectionItemList_AddNewConnection;
 
-        public EditOperation_AddConnection(NodeGraphView View, List<Connection> ConnectionsToRemove, List<Connection> ConnectionsToAdd)
+        public EditOperation_AddConnection(ConnectionItemList ConnectionItemList_RemoveOldConnections, ConnectionItemList ConnectionItemList_AddNewConnection)
         {
-            _View = View;
-            _ConnectionsToRemove = ConnectionsToRemove.Clone();
-            _ConnectionsToAdd = ConnectionsToAdd.Clone();
+            _ConnectionItemList_RemoveOldConnections = ConnectionItemList_RemoveOldConnections;
+            _ConnectionItemList_AddNewConnection = ConnectionItemList_AddNewConnection;
         }
 
         public override void Undo()
         {
-            for(int i = _ConnectionsToAdd.Count - 1; i >= 0; --i)
-            {
-                _View.GetModel().RemoveConnection(_ConnectionsToAdd[i]);
-            }
-            foreach(Connection Connection in _ConnectionsToRemove)
-            {
-                _View.GetModel().AddConnection(Connection);
-            }
+            _ConnectionItemList_AddNewConnection.DoRemoveOperation();
+            _ConnectionItemList_RemoveOldConnections.DoAddOperation();
 
-            _View.SetModified();
+            InspectorUI InspectorUI = InspectorUI.GetInstance();
+            InspectorUI.SetObjectInspected(null);
+            InspectorUI.InspectObject();
+
+            NodeGraphUI.GetInstance().SetModified();
         }
 
         public override void Redo()
         {
-            for (int i = _ConnectionsToRemove.Count - 1; i >= 0; --i)
-            {
-                _View.GetModel().RemoveConnection(_ConnectionsToRemove[i]);
-            }
-            foreach (Connection Connection in _ConnectionsToAdd)
-            {
-                _View.GetModel().AddConnection(Connection);
-            }
+            _ConnectionItemList_RemoveOldConnections.DoRemoveOperation();
+            _ConnectionItemList_AddNewConnection.DoAddOperation();
 
-            _View.SetModified();
+            InspectorUI InspectorUI = InspectorUI.GetInstance();
+            InspectorUI.SetObjectInspected(null);
+            InspectorUI.InspectObject();
+
+            NodeGraphUI.GetInstance().SetModified();
         }
     }
 }

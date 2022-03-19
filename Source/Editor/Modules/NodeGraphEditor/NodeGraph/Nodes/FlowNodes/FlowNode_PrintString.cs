@@ -1,8 +1,6 @@
-﻿using EditorUI;
-
-namespace CrossEditor
+﻿namespace Editor
 {
-    class FlowNode_PrintString : FlowNode
+    internal class FlowNode_PrintString : FlowNode
     {
         public FlowNode_PrintString()
         {

@@ -1,52 +1,41 @@
-﻿using EditorUI;
-using System.Collections.Generic;
-
-namespace CrossEditor
+﻿namespace Editor
 {
-    class EditOperation_RemoveNode : EditOperation
+    internal class EditOperation_RemoveNode : EditOperation
     {
-        NodeGraphView _View;
-        List<Node> _Nodes;
-        List<Connection> _ConnectionsToRemove;
+        private NodeGraph _NodeGraph;
+        private Node _Node;
+        private ConnectionItemList _ConnectionItemList;
 
-        public EditOperation_RemoveNode(NodeGraphView View, List<Node> Nodes, List<Connection> ConnectionsToRemove)
+        public EditOperation_RemoveNode(NodeGraph NodeGraph, Node Node, ConnectionItemList ConnectionItemList)
         {
-            _View = View;
-            _Nodes = Nodes.Clone();
-            _ConnectionsToRemove = ConnectionsToRemove.Clone();
+            _NodeGraph = NodeGraph;
+            _Node = Node;
+            _ConnectionItemList = ConnectionItemList;
         }
 
         public override void Undo()
         {
-            _View.ClearSelectedNodes();
-            foreach (Node Node in _Nodes)
-            {
-                _View.GetModel().AddNode(Node);
-                _View.AddSelectedNode(Node);
-            }
+            _NodeGraph.AddNodeDirectly(_Node);
+            _ConnectionItemList.DoAddOperation();
 
-            foreach (Connection Connection in _ConnectionsToRemove)
-            {
-                _View.GetModel().AddConnection(Connection);
-            }
+            NodeGraphUI.GetInstance().SelectNode(_Node);
 
-            _View.SetModified();
+            InspectorUI InspectorUI = InspectorUI.GetInstance();
+            InspectorUI.SetObjectInspected(_Node);
+            InspectorUI.InspectObject();
+
+            NodeGraphUI.GetInstance().SetModified();
         }
 
         public override void Redo()
         {
-            foreach (Connection Connection in _ConnectionsToRemove)
-            {
-                _View.GetModel().RemoveConnection(Connection);
-            }
+            _NodeGraph.RemoveNode(_Node);
 
-            _View.ClearSelectedNodes();
-            foreach (Node Node in _Nodes)
-            {
-                _View.GetModel().RemoveNode(Node);
-            }
+            InspectorUI InspectorUI = InspectorUI.GetInstance();
+            InspectorUI.SetObjectInspected(null);
+            InspectorUI.InspectObject();
 
-            _View.SetModified();
+            NodeGraphUI.GetInstance().SetModified();
         }
     }
 }
