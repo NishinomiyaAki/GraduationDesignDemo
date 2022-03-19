@@ -1,6 +1,6 @@
-﻿namespace CrossEditor
+﻿namespace Editor
 {
-    class FlowNode_WhileLoop : FlowNode
+    internal class FlowNode_WhileLoop : FlowNode
     {
         public FlowNode_WhileLoop()
         {

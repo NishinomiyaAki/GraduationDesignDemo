@@ -1,16 +1,15 @@
 ﻿using EditorUI;
 
-namespace CrossEditor
+namespace Editor
 {
-    class FlowNode_Bool : FlowNode_StringContent
+    internal class FlowNode_Bool : FlowNode_StringContent
     {
-        bool _Value;
+        private bool _Value;
 
-        public FlowNode_Bool(bool Value = false)
+        public FlowNode_Bool(bool Value)
         {
             Name = "Bool";
             NodeType = NodeType.Expression;
-            TemplateExpression = "{0}";
 
             _Value = Value;
 
@@ -25,6 +24,18 @@ namespace CrossEditor
             {
                 _Value = value;
             }
+        }
+
+        public override void SaveToXml(Record RecordNode)
+        {
+            base.SaveToXml(RecordNode);
+            RecordNode.SetBool("Value", _Value);
+        }
+
+        public override void LoadFromXml(Record RecordNode)
+        {
+            base.LoadFromXml(RecordNode);
+            _Value = RecordNode.GetBool("Value");
         }
 
         public override object Eval(int OutSlotIndex)
@@ -42,10 +53,6 @@ namespace CrossEditor
         public override string GetStringContent()
         {
             return _Value.ToString();
-        }
-        public override string ToExpression()
-        {
-            return string.Format(TemplateExpression, _Value.ToString().ToLower());
         }
     }
 }

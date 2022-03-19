@@ -1,8 +1,8 @@
-﻿namespace CrossEditor
+﻿namespace Editor
 {
-    class FlowNode_ForLoop : FlowNode
+    internal class FlowNode_ForLoop : FlowNode
     {
-        int Index;
+        private int Index;
 
         public FlowNode_ForLoop()
         {

@@ -1,23 +1,22 @@
-﻿using System;
-using EditorUI;
+﻿using EditorUI;
+using System;
 
-namespace CrossEditor
+namespace Editor
 {
-    enum BinaryLogicOp
+    internal enum BinaryLogicOp
     {
         And,
         Or,
         Xor,
     }
 
-    class FlowNode_BinaryLogicOp : FlowNode_StringContent
+    internal class FlowNode_BinaryLogicOp : FlowNode_StringContent
     {
-        BinaryLogicOp _BinaryLogicOp;
+        private BinaryLogicOp _BinaryLogicOp;
 
-        public FlowNode_BinaryLogicOp(BinaryLogicOp BinaryLogicOp = BinaryLogicOp.And)
+        public FlowNode_BinaryLogicOp(BinaryLogicOp BinaryLogicOp)
         {
             Name = "BinaryLogicOp";
-            TemplateExpression = "({0}) {1} ({2})";
             NodeType = NodeType.Expression;
 
             _BinaryLogicOp = BinaryLogicOp;
@@ -36,6 +35,23 @@ namespace CrossEditor
             {
                 _BinaryLogicOp = value;
             }
+        }
+
+        public override void SaveToXml(Record RecordNode)
+        {
+            base.SaveToXml(RecordNode);
+            RecordNode.SetString("BinaryLogicOp", _BinaryLogicOp.ToString());
+        }
+
+        private BinaryLogicOp StringToBinaryLogicOp(string String)
+        {
+            return Enum.Parse<BinaryLogicOp>(String);
+        }
+
+        public override void LoadFromXml(Record RecordNode)
+        {
+            base.LoadFromXml(RecordNode);
+            _BinaryLogicOp = StringToBinaryLogicOp(RecordNode.GetString("BinaryLogicOp"));
         }
 
         public override object Eval(int OutSlotIndex)
@@ -64,10 +80,13 @@ namespace CrossEditor
                 {
                     case BinaryLogicOp.And:
                         return Bool1 & Bool2;
+
                     case BinaryLogicOp.Or:
                         return Bool1 | Bool2;
+
                     case BinaryLogicOp.Xor:
                         return Bool1 ^ Bool2;
+
                     default:
                         DebugHelper.Assert(false);
                         break;
@@ -75,7 +94,7 @@ namespace CrossEditor
             }
             else
             {
-                CommitError("In slots type missmatch");
+                CommitNodeError("In slots type missmatch");
             }
             return null;
         }
@@ -86,45 +105,14 @@ namespace CrossEditor
             {
                 case BinaryLogicOp.And:
                     return "And";
+
                 case BinaryLogicOp.Or:
                     return "Or";
+
                 case BinaryLogicOp.Xor:
                     return "Xor";
             }
             return "<error>";
-        }
-
-        public override string ToExpression()
-        {
-            int OutSlotIndex1;
-            int OutSlotIndex2;
-            FlowNode InNode1 = GetInputNode(0, out OutSlotIndex1) as FlowNode;
-            FlowNode InNode2 = GetInputNode(1, out OutSlotIndex2) as FlowNode;
-            if (InNode1 == null)
-            {
-                CommitInSlotError(0, "slot is not connected.");
-                return "";
-            }
-            if (InNode2 == null)
-            {
-                CommitInSlotError(1, "slot is not connected.");
-                return "";
-            }
-
-            string op = "<error>";
-            switch (_BinaryLogicOp)
-            {
-                case BinaryLogicOp.And:
-                    op = "and";
-                    break;
-                case BinaryLogicOp.Or:
-                    op = "or";
-                    break;
-                case BinaryLogicOp.Xor:
-                    op = "xor";
-                    break;
-            }
-            return String.Format(TemplateExpression, InNode1.ToExpression(), op, InNode2.ToExpression());
         }
     }
 }

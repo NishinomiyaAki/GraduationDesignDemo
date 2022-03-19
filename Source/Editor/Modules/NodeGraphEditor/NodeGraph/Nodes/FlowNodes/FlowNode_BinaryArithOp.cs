@@ -1,9 +1,9 @@
-﻿using System;
-using EditorUI;
+﻿using EditorUI;
+using System;
 
-namespace CrossEditor
+namespace Editor
 {
-    enum BinaryArithOp
+    internal enum BinaryArithOp
     {
         Add,
         Substract,
@@ -12,15 +12,14 @@ namespace CrossEditor
         Modulo,
     }
 
-    class FlowNode_BinaryArithOp : FlowNode_StringContent
+    internal class FlowNode_BinaryArithOp : FlowNode_StringContent
     {
-        BinaryArithOp _BinaryArithOp;
+        private BinaryArithOp _BinaryArithOp;
 
-        public FlowNode_BinaryArithOp(BinaryArithOp BinaryArithOp = BinaryArithOp.Add)
+        public FlowNode_BinaryArithOp(BinaryArithOp BinaryArithOp)
         {
             Name = "BinaryArithOp";
             NodeType = NodeType.Expression;
-            TemplateExpression = "({0}) {1} ({2})";
 
             _BinaryArithOp = BinaryArithOp;
 
@@ -38,6 +37,23 @@ namespace CrossEditor
             {
                 _BinaryArithOp = value;
             }
+        }
+
+        public override void SaveToXml(Record RecordNode)
+        {
+            base.SaveToXml(RecordNode);
+            RecordNode.SetString("BinaryArithOp", _BinaryArithOp.ToString());
+        }
+
+        private BinaryArithOp StringToBinaryArithOp(string String)
+        {
+            return Enum.Parse<BinaryArithOp>(String);
+        }
+
+        public override void LoadFromXml(Record RecordNode)
+        {
+            base.LoadFromXml(RecordNode);
+            _BinaryArithOp = StringToBinaryArithOp(RecordNode.GetString("BinaryArithOp"));
         }
 
         public override object Eval(int OutSlotIndex)
@@ -66,14 +82,19 @@ namespace CrossEditor
                 {
                     case BinaryArithOp.Add:
                         return Int1 + Int2;
+
                     case BinaryArithOp.Substract:
                         return Int1 - Int2;
+
                     case BinaryArithOp.Multiply:
                         return Int1 * Int2;
+
                     case BinaryArithOp.Divide:
                         return Int1 / Int2;
+
                     case BinaryArithOp.Modulo:
                         return Int1 % Int2;
+
                     default:
                         DebugHelper.Assert(false);
                         break;
@@ -87,12 +108,16 @@ namespace CrossEditor
                 {
                     case BinaryArithOp.Add:
                         return Float1 + Float2;
+
                     case BinaryArithOp.Substract:
                         return Float1 - Float2;
+
                     case BinaryArithOp.Multiply:
                         return Float1 * Float2;
+
                     case BinaryArithOp.Divide:
                         return Float1 / Float2;
+
                     default:
                         DebugHelper.Assert(false);
                         break;
@@ -100,7 +125,7 @@ namespace CrossEditor
             }
             else
             {
-                CommitError("In slots type missmatch");
+                CommitNodeError("In slots type missmatch");
             }
             return 0;
         }
@@ -111,57 +136,20 @@ namespace CrossEditor
             {
                 case BinaryArithOp.Add:
                     return "+";
+
                 case BinaryArithOp.Substract:
                     return "-";
+
                 case BinaryArithOp.Multiply:
                     return "*";
+
                 case BinaryArithOp.Divide:
                     return "/";
+
                 case BinaryArithOp.Modulo:
                     return "%";
             }
             return "<error>";
-        }
-
-        public override string ToExpression()
-        {
-            int OutSlotIndex1;
-            int OutSlotIndex2;
-            FlowNode InNode1 = GetInputNode(0, out OutSlotIndex1) as FlowNode;
-            FlowNode InNode2 = GetInputNode(1, out OutSlotIndex2) as FlowNode;
-            if (InNode1 == null)
-            {
-                CommitInSlotError(0, "slot is not connected.");
-                return "";
-            }
-            if (InNode2 == null)
-            {
-                CommitInSlotError(1, "slot is not connected.");
-                return "";
-            }
-
-            // TODO(x): Compatibility check without Eval
-            // e.g : float % float is not allowed
-            string op = "<error>";
-            switch (_BinaryArithOp)
-            {
-                case BinaryArithOp.Add:
-                    op = "+";
-                    break;
-                case BinaryArithOp.Substract:
-                    op = "-";
-                    break;
-                case BinaryArithOp.Multiply:
-                    op = "*";
-                    break;
-                case BinaryArithOp.Divide:
-                    op = "/";
-                    break;
-                case BinaryArithOp.Modulo:
-                    op = "%";
-                    break;
-            }
-            return String.Format(TemplateExpression, InNode1.ToExpression(), op, InNode2.ToExpression());
         }
     }
 }
