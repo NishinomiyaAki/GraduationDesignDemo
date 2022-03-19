@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using EditorUI;
+using System.Collections.Generic;
 
-namespace Editor
+namespace CrossEditor
 {
     public class FlowNode : Node
     {
+        public string TemplateExpression = "";
         public virtual object Eval(int OutSlotIndex)
         {
             return null;
@@ -11,6 +13,7 @@ namespace Editor
 
         public virtual void Run()
         {
+
         }
 
         public bool GetInSlotValue_Bool(int InSlotIndex, out bool bValue)
@@ -83,7 +86,7 @@ namespace Editor
             CommitInSlotError(InSlotIndex, "slot is not connected.");
             String = "";
             return false;
-        }
+        }        
 
         public void RunOutSlot(int OutSlotIndex)
         {
@@ -93,6 +96,51 @@ namespace Editor
                 FlowNode FlowNode = OutputNode as FlowNode;
                 FlowNode.Run();
             }
+        }
+
+        public virtual string ToExpression()
+        {
+            return TemplateExpression;
+        }
+
+        public List<Node> GetOutputNodes(int Index)
+        {
+            Slot Slot = GetOutSlot(Index);
+            List<Connection> Connections = Slot.GetConnections();
+            List<Node> Nodes = new List<Node>();
+            foreach (Connection Connection in Connections)
+            {
+                Nodes.Add(Connection.InSlot.Node);
+            }
+            return Nodes;
+        }
+
+        public Node GetInputNode(int Index, out int OutSlotIndex)
+        {
+            Slot Slot = GetInSlot(Index);
+            List<Connection> Connections = Slot.GetConnections();
+            int ConnectionCount = Connections.Count;
+            if (ConnectionCount > 0)
+            {
+                Connection Connection = Connections[0];
+                OutSlotIndex = Connection.OutSlot.Index;
+                return Connection.OutSlot.Node;
+            }
+            else
+            {
+                OutSlotIndex = -1;
+                return null;
+            }
+        }
+
+        public virtual void CommitInSlotError(int InSlotIndex, string ErrorInformation)
+        {
+            SetError();
+            Slot Slot = GetInSlot(InSlotIndex);
+            Slot.SetError();
+            string ErrorMessage = string.Format("Error: Graph Slot {0}({1})-{2}({3}): {4}", Name, ID, Slot.Name, InSlotIndex, ErrorInformation);
+            ConsoleUI.GetInstance().AddLogItem(LogMessageType.Error, ErrorMessage);
+            MainUI.GetInstance().ActivateDockingCard_Console();
         }
     }
 }

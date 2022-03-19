@@ -1,20 +1,20 @@
 ﻿using EditorUI;
 using System;
 
-namespace Editor
+namespace CrossEditor
 {
     public class CubicBazier
     {
-        private Vector2f Point1;
-        private Vector2f Point2;
-        private Vector2f Point3;
-        private Vector2f Point4;
-        private float AX;
-        private float BX;
-        private float CX;
-        private float AY;
-        private float BY;
-        private float CY;
+        Vector2f Point1;
+        Vector2f Point2;
+        Vector2f Point3;
+        Vector2f Point4;
+        float AX;
+        float BX;
+        float CX;
+        float AY;
+        float BY;
+        float CY;
 
         public CubicBazier()
         {
@@ -73,7 +73,7 @@ namespace Editor
             Y2 += 4;
         }
 
-        private Vector2f CalculateBezier(float T)
+        Vector2f CalculateBezier(float T)
         {
             Vector2f Result = new Vector2f();
 
@@ -86,7 +86,7 @@ namespace Editor
             return Result;
         }
 
-        public void Draw(Color Color, int Segment)
+        public void Draw(Color Color, int Segment, float LineWidth = 2f)
         {
             GraphicsHelper GraphicsHelper = GraphicsHelper.GetInstance();
             int i;
@@ -100,7 +100,7 @@ namespace Editor
                 float Y1 = Point1.Y;
                 float X2 = Point2.X;
                 float Y2 = Point2.Y;
-                GraphicsHelper.DrawLine(Color, X1, Y1, X2, Y2);
+                GraphicsHelper.DrawLine(Color, X1, Y1, X2, Y2, LineWidth);
             }
             if (true)
             {
@@ -108,7 +108,7 @@ namespace Editor
                 float Y1 = Point4.Y - 4;
                 float X2 = Point4.X;
                 float Y2 = Point4.Y;
-                GraphicsHelper.DrawLine(Color, X1, Y1, X2, Y2);
+                GraphicsHelper.DrawLine(Color, X1, Y1, X2, Y2, LineWidth);
             }
             if (true)
             {
@@ -116,7 +116,7 @@ namespace Editor
                 float Y1 = Point4.Y + 4;
                 float X2 = Point4.X;
                 float Y2 = Point4.Y;
-                GraphicsHelper.DrawLine(Color, X1, Y1, X2, Y2);
+                GraphicsHelper.DrawLine(Color, X1, Y1, X2, Y2, LineWidth);
             }
         }
 

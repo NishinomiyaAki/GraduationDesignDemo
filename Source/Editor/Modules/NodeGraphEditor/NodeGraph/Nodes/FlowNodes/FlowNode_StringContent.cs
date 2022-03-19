@@ -1,12 +1,12 @@
 ﻿using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
     public class FlowNode_StringContent : FlowNode
     {
-        private const int SpanX = 3;
-        private const int SpanY = 3;
-        private const int OffsetY = 2;
+        const int SpanX = 3;
+        const int SpanY = 3;
+        const int OffsetY = 2;
 
         public virtual string GetStringContent()
         {
@@ -32,7 +32,7 @@ namespace Editor
 
             string StringContent = GetStringContent();
             Color Color2 = Color.FromRGBA(255, 255, 255, 255);
-            GraphicsHelper.DrawString(GraphicsHelper.DefaultFont, StringContent, Color2, ContentX, ContentY + OffsetY, ContentWidth, ContentHeight, TextAlign.CenterCenter);
+            GraphicsHelper.DrawString(null, StringContent, Color2, ContentX, ContentY + OffsetY, ContentWidth, ContentHeight, TextAlign.CenterCenter);
         }
     }
 }

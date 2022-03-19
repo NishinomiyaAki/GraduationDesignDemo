@@ -1,18 +1,18 @@
-﻿using EditorUI;
-using System;
+﻿using System;
+using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
-    internal enum UnaryArithOp
+    enum UnaryArithOp
     {
         Negative,
     }
 
-    internal class FlowNode_UnaryArithOp : FlowNode_StringContent
+    class FlowNode_UnaryArithOp : FlowNode_StringContent
     {
-        private UnaryArithOp _UnaryArithOp;
+        UnaryArithOp _UnaryArithOp;
 
-        public FlowNode_UnaryArithOp(UnaryArithOp UnaryArithOp)
+        public FlowNode_UnaryArithOp(UnaryArithOp UnaryArithOp = UnaryArithOp.Negative)
         {
             Name = "BinaryArithOp";
             NodeType = NodeType.Expression;
@@ -35,23 +35,6 @@ namespace Editor
             }
         }
 
-        public override void SaveToXml(Record RecordNode)
-        {
-            base.SaveToXml(RecordNode);
-            RecordNode.SetString("UnaryArithOp", _UnaryArithOp.ToString());
-        }
-
-        private UnaryArithOp StringToUnaryArithOp(string String)
-        {
-            return Enum.Parse<UnaryArithOp>(String);
-        }
-
-        public override void LoadFromXml(Record RecordNode)
-        {
-            base.LoadFromXml(RecordNode);
-            _UnaryArithOp = StringToUnaryArithOp(RecordNode.GetString("UnaryArithOp"));
-        }
-
         public override object Eval(int OutSlotIndex)
         {
             int OutSlotIndex1;
@@ -69,7 +52,6 @@ namespace Editor
                 {
                     case UnaryArithOp.Negative:
                         return -Int1;
-
                     default:
                         DebugHelper.Assert(false);
                         break;

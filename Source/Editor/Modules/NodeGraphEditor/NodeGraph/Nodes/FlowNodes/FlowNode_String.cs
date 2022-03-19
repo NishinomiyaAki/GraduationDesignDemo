@@ -1,12 +1,12 @@
 ﻿using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
-    internal class FlowNode_String : FlowNode_StringContent
+    class FlowNode_String : FlowNode_StringContent
     {
-        private string _String;
+        string _String;
 
-        public FlowNode_String(string String)
+        public FlowNode_String(string String = "")
         {
             Name = "String";
             NodeType = NodeType.Expression;
@@ -24,18 +24,6 @@ namespace Editor
             {
                 _String = value;
             }
-        }
-
-        public override void SaveToXml(Record RecordNode)
-        {
-            base.SaveToXml(RecordNode);
-            RecordNode.SetString("String", _String);
-        }
-
-        public override void LoadFromXml(Record RecordNode)
-        {
-            base.LoadFromXml(RecordNode);
-            _String = RecordNode.GetString("String");
         }
 
         public override object Eval(int OutSlotIndex)

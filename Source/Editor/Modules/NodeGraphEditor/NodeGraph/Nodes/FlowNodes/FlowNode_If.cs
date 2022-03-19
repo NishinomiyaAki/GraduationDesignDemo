@@ -1,6 +1,6 @@
-﻿namespace Editor
+﻿namespace CrossEditor
 {
-    internal class FlowNode_If : FlowNode
+    class FlowNode_If : FlowNode
     {
         public FlowNode_If()
         {
