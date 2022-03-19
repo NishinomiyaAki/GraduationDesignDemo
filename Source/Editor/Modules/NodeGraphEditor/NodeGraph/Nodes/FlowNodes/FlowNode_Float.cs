@@ -1,15 +1,16 @@
 ﻿using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
-    internal class FlowNode_Float : FlowNode_StringContent
+    class FlowNode_Float : FlowNode_StringContent
     {
-        private float _Value;
+        float _Value;
 
-        public FlowNode_Float(float Value)
+        public FlowNode_Float(float Value = 0.0f)
         {
             Name = "Float";
             NodeType = NodeType.Expression;
+            TemplateExpression = "{0}";
 
             _Value = Value;
 
@@ -24,18 +25,6 @@ namespace Editor
             {
                 _Value = value;
             }
-        }
-
-        public override void SaveToXml(Record RecordNode)
-        {
-            base.SaveToXml(RecordNode);
-            RecordNode.SetFloat("Value", _Value);
-        }
-
-        public override void LoadFromXml(Record RecordNode)
-        {
-            base.LoadFromXml(RecordNode);
-            _Value = RecordNode.GetFloat("Value");
         }
 
         public override object Eval(int OutSlotIndex)
@@ -53,6 +42,10 @@ namespace Editor
         public override string GetStringContent()
         {
             return _Value.ToString();
+        }
+        public override string ToExpression()
+        {
+            return string.Format(TemplateExpression, _Value.ToString());
         }
     }
 }

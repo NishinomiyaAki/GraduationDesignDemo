@@ -1,12 +1,12 @@
 ﻿using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
     public class FlowNode_Event : FlowNode_StringContent
     {
-        private string _EventName;
+        string _EventName;
 
-        public FlowNode_Event(string EventName)
+        public FlowNode_Event(string EventName = "default")
         {
             Name = "Event";
             NodeType = NodeType.Event;
@@ -29,18 +29,6 @@ namespace Editor
         public string GetEventName()
         {
             return _EventName;
-        }
-
-        public override void SaveToXml(Record RecordNode)
-        {
-            base.SaveToXml(RecordNode);
-            RecordNode.SetString("EventName", _EventName);
-        }
-
-        public override void LoadFromXml(Record RecordNode)
-        {
-            base.LoadFromXml(RecordNode);
-            _EventName = RecordNode.GetString("EventName");
         }
 
         public override void Run()

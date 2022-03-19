@@ -1,6 +1,6 @@
-﻿namespace Editor
+﻿namespace CrossEditor
 {
-    internal class FlowNode_ToString : FlowNode
+    class FlowNode_ToString : FlowNode
     {
         public FlowNode_ToString()
         {

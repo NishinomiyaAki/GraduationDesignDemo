@@ -1,50 +1,57 @@
-﻿namespace Editor
-{
-    internal class EditOperation_MoveNode : EditOperation
-    {
-        private Node _Node;
-        private int _OldX;
-        private int _OldY;
-        private int _NewX;
-        private int _NewY;
+﻿using EditorUI;
+using System.Collections.Generic;
 
-        public EditOperation_MoveNode(Node Node, int OldX, int OldY, int NewX, int NewY)
+namespace CrossEditor
+{
+    class EditOperation_MoveNode : EditOperation
+    {
+        NodeGraphView _View;
+        List<Node> _NodesToMove;
+        List<Node> _NodesToSelect;
+        int _DeltaX;
+        int _DeltaY;
+
+        public EditOperation_MoveNode(NodeGraphView View, List<Node> NodesToMove, List<Node> NodesToSelect, int DeltaX, int DeltaY)
         {
-            _Node = Node;
-            _OldX = OldX;
-            _OldY = OldY;
-            _NewX = NewX;
-            _NewY = NewY;
+            _View = View;
+            _NodesToMove = NodesToMove.Clone();
+            _NodesToSelect = NodesToSelect.Clone();
+            _DeltaX = DeltaX;
+            _DeltaY = DeltaY;
         }
 
         public override void Undo()
         {
-            _Node.X = _OldX;
-            _Node.Y = _OldY;
-            _Node.DoLayoutWithConnections();
+            foreach (Node Node in _NodesToMove)
+            {
+                Node.X -= _DeltaX;
+                Node.Y -= _DeltaY;
+            }
 
-            NodeGraphUI.GetInstance().SelectNode(_Node);
+            _View.ClearSelectedNodes();
+            foreach (Node Node in _NodesToSelect)
+            {
+                _View.AddSelectedNode(Node);
+            }
 
-            InspectorUI InspectorUI = InspectorUI.GetInstance();
-            InspectorUI.SetObjectInspected(_Node);
-            InspectorUI.InspectObject();
-
-            NodeGraphUI.GetInstance().SetModified();
+            _View.SetModified();
         }
 
         public override void Redo()
         {
-            _Node.X = _NewX;
-            _Node.Y = _NewY;
-            _Node.DoLayoutWithConnections();
+            foreach (Node Node in _NodesToMove)
+            {
+                Node.X += _DeltaX;
+                Node.Y += _DeltaY;
+            }
 
-            NodeGraphUI.GetInstance().SelectNode(_Node);
+            _View.ClearSelectedNodes();
+            foreach (Node Node in _NodesToSelect)
+            {
+                _View.AddSelectedNode(Node);
+            }
 
-            InspectorUI InspectorUI = InspectorUI.GetInstance();
-            InspectorUI.SetObjectInspected(_Node);
-            InspectorUI.InspectObject();
-
-            NodeGraphUI.GetInstance().SetModified();
+            _View.SetModified();
         }
     }
 }

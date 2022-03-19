@@ -1,19 +1,22 @@
-﻿using EditorUI;
-using System;
+﻿using System;
+using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
-    internal enum UnaryLogicOp
+    enum UnaryLogicOp
     {
         Not,
     }
 
-    internal class FlowNode_UnaryLogicOp : FlowNode_StringContent
+    class FlowNode_UnaryLogicOp : FlowNode_StringContent
     {
-        private UnaryLogicOp _UnaryLogicOp;
+        UnaryLogicOp _UnaryLogicOp;
 
-        public FlowNode_UnaryLogicOp(UnaryLogicOp UnaryLogicOp)
+        public FlowNode_UnaryLogicOp(UnaryLogicOp UnaryLogicOp = UnaryLogicOp.Not)
         {
+
+            TemplateExpression = "({0} ({1}))";
+
             Name = "UnaryLogicOp";
             NodeType = NodeType.Expression;
 
@@ -34,23 +37,6 @@ namespace Editor
             }
         }
 
-        public override void SaveToXml(Record RecordNode)
-        {
-            base.SaveToXml(RecordNode);
-            RecordNode.SetString("UnaryLogicOp", _UnaryLogicOp.ToString());
-        }
-
-        private UnaryLogicOp StringToUnaryLogicOp(string String)
-        {
-            return Enum.Parse<UnaryLogicOp>(String);
-        }
-
-        public override void LoadFromXml(Record RecordNode)
-        {
-            base.LoadFromXml(RecordNode);
-            _UnaryLogicOp = StringToUnaryLogicOp(RecordNode.GetString("UnaryLogicOp"));
-        }
-
         public override object Eval(int OutSlotIndex)
         {
             int OutSlotIndex1;
@@ -68,7 +54,6 @@ namespace Editor
                 {
                     case UnaryLogicOp.Not:
                         return !Bool1;
-
                     default:
                         DebugHelper.Assert(false);
                         break;
@@ -85,6 +70,34 @@ namespace Editor
                     return "Not";
             }
             return "<error>";
+        }
+
+        public override string ToExpression()
+        {
+            int OutSlotIndex1;
+            FlowNode InNode1 = GetInputNode(0, out OutSlotIndex1) as FlowNode;
+
+            if (InNode1 == null)
+            {
+                CommitInSlotError(0, "slot is not connected.");
+                return "";
+            }
+            string op = "<error>";
+            switch (_UnaryLogicOp)
+            {
+                case UnaryLogicOp.Not:
+                    {
+                        op = "not";
+                        break;
+                    }
+                default:
+                    {
+                        CommitError("op type missmatch" + _UnaryLogicOp.ToString());
+                        break;
+                    }
+            }
+
+            return String.Format(TemplateExpression, op, InNode1.ToExpression());
         }
     }
 }

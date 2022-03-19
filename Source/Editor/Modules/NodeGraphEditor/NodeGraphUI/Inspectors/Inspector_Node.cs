@@ -1,23 +1,25 @@
-﻿using System;
+﻿using EditorUI;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 
-namespace Editor
+namespace CrossEditor
 {
-    public class Inspector_Node : Inspector
+    class Inspector_Node : Inspector
     {
-        private Node _Node;
+        Node _Node;
 
-        private Panel _PanelIcon;
-        private Edit _EditName;
-        private Panel _PanelProperty;
+        Panel _PanelIcon;
+        Edit _EditName;
+        Panel _PanelProperty;
 
         public Inspector_Node()
         {
         }
 
-        public override void Inspect(Control Container, object Parameter1, object Parameter2, object Parameter3)
+        public override void InspectObject(Control Container, object Object, object Tag)
         {
-            _Node = (Node)Parameter1;
+            _Node = (Node)Object;
 
             _PanelIcon = new Panel();
             _PanelIcon.Initialize();
@@ -31,7 +33,8 @@ namespace Editor
             _EditName.SetReadOnly(true);
             Container.AddChild(_EditName);
             EditContextUI.GetInstance().RegisterEdit(_EditName);
-            _EditName.SetText(_Node.GetType().Name);
+            _EditName.SetSize(100, 16);
+            _EditName.SetText(_Node.GetType().Name.ToString());
 
             _PanelProperty = new Panel();
             _PanelProperty.Initialize();
@@ -40,10 +43,22 @@ namespace Editor
             RefreshChildInspectors();
         }
 
-        private void AddPropertyInspector(PropertyInfo PropertyInfo)
+        public override void WriteValue()
+        {
+            foreach (Inspector Inspector in _ChildInspectors)
+            {
+                Inspector.WriteValue();
+            }
+        }
+
+        void AddPropertyInspector(PropertyInfo PropertyInfo)
         {
             string PropertyTypeString = PropertyInfo.PropertyType.ToString();
             PropertyInfoAttribute PropertyInfoAttribute = PropertyInfoAttribute.GetPropertyInfoAttribute(PropertyInfo);
+            if (PropertyInfoAttribute.bHide)
+            {
+                return;
+            }
             if (PropertyInfoAttribute.PropertyType != "")
             {
                 PropertyTypeString = PropertyInfoAttribute.PropertyType;
@@ -51,21 +66,26 @@ namespace Editor
             Type PropertyType = PropertyInfo.PropertyType;
             bool bIsEnum = PropertyType.IsEnum;
             ObjectProperty ObjectProperty = new ObjectProperty();
+            ObjectProperty.Object = _Node;
             ObjectProperty.Name = PropertyInfo.Name;
             ObjectProperty.Type = PropertyType;
+            ObjectProperty.EditValid = _Node.bEditable;
+            ObjectProperty.PropertyInfoAttribute = PropertyInfoAttribute;
             ObjectProperty.GetPropertyValueFunction = GetPropertyValueFunction;
             ObjectProperty.SetPropertyValueFunction = SetPropertyValueFunction;
             Inspector Inspector_Property = InspectorManager.GetInstance().CreatePropertyInspector(PropertyTypeString, bIsEnum);
-            Inspector_Property.Inspect(_PanelProperty, _Node, ObjectProperty, PropertyInfoAttribute);
-            _ChildInspectors.Add(Inspector_Property);
+            Inspector_Property.InspectProperty(_PanelProperty, _PanelProperty, ObjectProperty);
+            AddChildInspector(Inspector_Property);
         }
 
-        protected void RefreshChildInspectors()
+        protected virtual void RefreshChildInspectors()
         {
             Type Type = _Node.GetType();
             _PanelProperty.ClearChildren();
             _ChildInspectors.Clear();
-            PropertyInfo[] Properties = Type.GetProperties();
+
+            PropertyInfo[] Properties;
+            Properties = Type.GetProperties();
 
             foreach (PropertyInfo PropertyInfo in Properties)
             {
@@ -73,7 +93,7 @@ namespace Editor
             }
         }
 
-        public object GetPropertyValueFunction(object Object, string PropertyName)
+        public virtual object GetPropertyValueFunction(object Object, string PropertyName, ValueExtraProperty ValueExtraProperty)
         {
             Type Type = Object.GetType();
             PropertyInfo PropertyInfo = Type.GetProperty(PropertyName);
@@ -84,29 +104,32 @@ namespace Editor
             return null;
         }
 
-        public void SetPropertyValueFunction(object Object, string PropertyName, object PropertyValue)
+        public virtual void SetPropertyValueFunction(object Object, string PropertyName, object PropertyValue, SubProperty SubProperty)
         {
             Type Type = Object.GetType();
             PropertyInfo PropertyInfo = Type.GetProperty(PropertyName);
             if (PropertyInfo != null)
             {
                 PropertyInfo.SetValue(Object, PropertyValue);
+                _Node.GetOwner().GetView().SetModified();
             }
             _Node.DoLayoutWithConnections();
         }
 
         public override void UpdateLayout(int Width, ref int Y)
         {
+            Width = Math.Max(Width, 260);
             int SpanX = 5;
-            _EditName.Location = new System.Drawing.Point(0, Y);
-            _EditName.Size = new System.Drawing.Size(Width, Edit.GetDefalutFontHeight());
+            _PanelIcon.SetPosition(SpanX, Y + 3, 20, 20);
+            int EditNameX = SpanX;
+            int EditNameWidth = Math.Max(Width - SpanX - EditNameX, 100);
+            _EditName.SetPosition(EditNameX, Y + 7, EditNameWidth, 16);
 
-            Y += _EditName.Height;
+            Y += 28;
 
             int Y1 = 0;
-            base.UpdateLayout(Width - SpanX, ref Y1);
-            _PanelProperty.Size = new System.Drawing.Size(Width - SpanX, Y1);
-            _PanelProperty.Location = new System.Drawing.Point(SpanX, Y);
+            base.UpdateLayout(Width, ref Y1);
+            _PanelProperty.SetPosition(0, Y, Width, Y1);
             Y += Y1;
         }
     }

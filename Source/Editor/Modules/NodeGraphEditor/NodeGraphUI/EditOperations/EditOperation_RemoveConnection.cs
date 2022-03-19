@@ -1,34 +1,37 @@
-﻿namespace Editor
-{
-    internal class EditOperation_RemoveConnection : EditOperation
-    {
-        private ConnectionItemList _ConnectionItemList;
+﻿using EditorUI;
+using System.Collections.Generic;
 
-        public EditOperation_RemoveConnection(ConnectionItemList ConnectionItemList)
+namespace CrossEditor
+{
+    class EditOperation_RemoveConnection : EditOperation
+    {
+        NodeGraphView _View;
+        List<Connection> _ConnectionsToRemove;
+
+        public EditOperation_RemoveConnection(NodeGraphView View, List<Connection> ConnectionsToRemove)
         {
-            _ConnectionItemList = ConnectionItemList;
+            _View = View;
+            _ConnectionsToRemove = ConnectionsToRemove.Clone();
         }
 
         public override void Undo()
         {
-            _ConnectionItemList.DoAddOperation();
+            foreach (Connection Connection in _ConnectionsToRemove)
+            {
+                _View.GetModel().AddConnection(Connection);
+            }
 
-            InspectorUI InspectorUI = InspectorUI.GetInstance();
-            InspectorUI.SetObjectInspected(null);
-            InspectorUI.InspectObject();
-
-            NodeGraphUI.GetInstance().SetModified();
+            _View.SetModified();
         }
 
         public override void Redo()
         {
-            _ConnectionItemList.DoRemoveOperation();
+            for (int i = _ConnectionsToRemove.Count - 1; i >= 0; --i)
+            {
+                _View.GetModel().RemoveConnection(_ConnectionsToRemove[i]);
+            }
 
-            InspectorUI InspectorUI = InspectorUI.GetInstance();
-            InspectorUI.SetObjectInspected(null);
-            InspectorUI.InspectObject();
-
-            NodeGraphUI.GetInstance().SetModified();
+            _View.SetModified();
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using EditorUI;
-using System;
+﻿using System;
+using EditorUI;
 
-namespace Editor
+namespace CrossEditor
 {
-    internal enum Relation
+    enum Relation
     {
         EqualTo,
         InequalTo,
@@ -13,14 +13,15 @@ namespace Editor
         GreaterEqualTo,
     }
 
-    internal class FlowNode_Compare : FlowNode_StringContent
+    class FlowNode_Compare : FlowNode_StringContent
     {
-        private Relation _Relation;
+        Relation _Relation;
 
-        public FlowNode_Compare(Relation Relation)
+        public FlowNode_Compare(Relation Relation = Relation.EqualTo)
         {
             Name = "Compare";
             NodeType = NodeType.Expression;
+            TemplateExpression = "({0}) {1} ({2})";
 
             _Relation = Relation;
 
@@ -38,23 +39,6 @@ namespace Editor
             {
                 _Relation = value;
             }
-        }
-
-        public override void SaveToXml(Record RecordNode)
-        {
-            base.SaveToXml(RecordNode);
-            RecordNode.SetString("Relation", _Relation.ToString());
-        }
-
-        private Relation StringToRelation(string String)
-        {
-            return Enum.Parse<Relation>(String);
-        }
-
-        public override void LoadFromXml(Record RecordNode)
-        {
-            base.LoadFromXml(RecordNode);
-            _Relation = StringToRelation(RecordNode.GetString("Relation"));
         }
 
         public override object Eval(int OutSlotIndex)
@@ -83,19 +67,14 @@ namespace Editor
                 {
                     case Relation.EqualTo:
                         return Int1 == Int2;
-
                     case Relation.InequalTo:
                         return Int1 != Int2;
-
                     case Relation.LowerTo:
                         return Int1 < Int2;
-
                     case Relation.LowerEqualTo:
                         return Int1 <= Int2;
-
                     case Relation.GreaterTo:
                         return Int1 > Int2;
-
                     case Relation.GreaterEqualTo:
                         return Int1 >= Int2;
                 }
@@ -108,53 +87,75 @@ namespace Editor
                 {
                     case Relation.EqualTo:
                         return Float1 == Float2;
-
                     case Relation.InequalTo:
                         return Float1 != Float2;
-
                     case Relation.LowerTo:
                         return Float1 < Float2;
-
                     case Relation.LowerEqualTo:
                         return Float1 <= Float2;
-
                     case Relation.GreaterTo:
                         return Float1 > Float2;
-
                     case Relation.GreaterEqualTo:
                         return Float1 >= Float2;
                 }
             }
             else
             {
-                CommitNodeError("In slots type missmatch");
+                CommitError("In slots type missmatch");
             }
             return null;
         }
 
-        public override string GetStringContent()
+        public string GetOpString(Relation inRelation)
         {
-            switch (_Relation)
+            string op = "<error>";
+            switch (inRelation)
             {
                 case Relation.EqualTo:
-                    return "==";
-
+                    op = "==";
+                    break;
                 case Relation.InequalTo:
-                    return "!=";
-
+                    op = "!=";
+                    break;
                 case Relation.LowerTo:
-                    return "<";
-
+                    op = "<";
+                    break;
                 case Relation.LowerEqualTo:
-                    return "<=";
-
+                    op = "<=";
+                    break;
                 case Relation.GreaterTo:
-                    return ">";
-
+                    op = ">";
+                    break;
                 case Relation.GreaterEqualTo:
-                    return ">=";
+                    op = ">=";
+                    break;
             }
-            return "<error>";
+            return op;
+        }
+
+        public override string GetStringContent()
+        {
+            return GetOpString(_Relation);
+        }
+        public override string ToExpression()
+        {
+            int OutSlotIndex1;
+            int OutSlotIndex2;
+            FlowNode InNode1 = GetInputNode(0, out OutSlotIndex1) as FlowNode;
+            FlowNode InNode2 = GetInputNode(1, out OutSlotIndex2) as FlowNode;
+            if (InNode1 == null)
+            {
+                CommitInSlotError(0, "slot is not connected.");
+                return "";
+            }
+            if (InNode2 == null)
+            {
+                CommitInSlotError(1, "slot is not connected.");
+                return "";
+            }
+
+            // TODO(x): Compatibility check without Eval
+            return String.Format(TemplateExpression, InNode1.ToExpression(), GetOpString(_Relation), InNode2.ToExpression());
         }
     }
 }
